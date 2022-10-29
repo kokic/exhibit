@@ -1,1 +1,1 @@
-# exhibition
+# exhibit
