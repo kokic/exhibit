@@ -14,7 +14,7 @@
     integrity="sha384-+VBxd3r6XgURycqtZ117nYw44OOcIax56Z4dCRWbxyPt0Koah1uHoK0o4+/RRE05" crossorigin="anonymous">
     </script>
 
-  <title>The combinatorial structure of a D-Θ±ell-Hodge theater</title>
+  <title>etale</title>
 </head>
 
 <body></body>
@@ -70,7 +70,7 @@
   STYLE.overload('effect', (element, parent) => parent.appendChild(element))
   STYLE.overload('effect', (element) => STYLE.effect(element, document.head))
 
-  let style = STYLE.effect(STYLE.create())
+  const style = STYLE.effect(STYLE.create())
 
   const rotation = (name, period, theta = 0, radius) => `
     .${name} { animation: ${name}_action ${period}s linear infinite; } 
