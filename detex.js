@@ -124,11 +124,10 @@ const lbrace = character('{')
 const rbrace = character('}')
 const braces = x => lbrace.follow(x).skip(rbrace).second()
 
-const macrohead = backslash.follow(letters).second()
-const monoargue = macrohead.follow(values).map(xs => monocase(xs))
 
 
-const chars = function (a, b) {
+
+const series = function (a, b) {
   let [code1, code2] = [a.code(), b.code()]
   let length = code2 - code1 + 1
   let codes = Array.from({ length: length }, (_, x) => x + code1)
@@ -137,44 +136,64 @@ const chars = function (a, b) {
 
 const alphabets = function () {
   let map = new Object()
-  Array.from(chars('A', 'Z')).forEach((x, i) => map[x] = arguments[i])
-  Array.from(chars('a', 'z')).forEach((x, i) => map[x] = arguments[26 + i])
+  Array.from(series('A', 'Z')).forEach((x, i) => map[x] = arguments[i])
+  Array.from(series('a', 'z')).forEach((x, i) => map[x] = arguments[26 + i])
   return map
 }
 
-const Unicode = {
-  mathbb: alphabets(
-    ...'𝔸𝔹ℂ', ...chars('𝔻', '𝔾'), 'ℍ', ...chars('𝕀', '𝕄'),
-    ...'ℕ𝕆ℙℚℝ', ...chars('𝕊', '𝕐'), 'ℤ', ...chars('𝕒', '𝕫')
-  )
-  // {
-  //   upper: '𝔸𝔹ℂ' +
-  //     chars('𝔻', '𝔾') + 'ℍ' +
-  //     chars('𝕀', '𝕄') + 'ℕ𝕆ℙℚℝ' +
-  //     chars('𝕊', '𝕐') + 'ℤ',
-  //   lower: chars('𝕒', '𝕫')
-  // }
+
+const typeface = function (name, data) {
+  Unicode[name] = data
+  Unary[name] = s => Array.from(s)
+    .map(x => Unicode[name][x] || x)
+    .join('')
 }
 
-const Mono = new Object()
-Mono.text = s => s
-Mono.mathbb = s => Array.from(s).map(x => Unicode.mathbb[x] || x).join('')
+const Unicode = {}
 
-const monocase = function (xs) {
+const Unary = {
+  text: s => s,
+}
+
+
+typeface('mathbb', alphabets(
+  ...'𝔸𝔹ℂ', ...series('𝔻', '𝔾'), 'ℍ', ...series('𝕀', '𝕄'), 
+  ...'ℕ𝕆ℙℚℝ', ...series('𝕊', '𝕐'), 'ℤ', ...series('𝕒', '𝕫'))
+)
+typeface('mathfrak', alphabets(...series('𝕬', '𝖟')))
+
+typeface('textit', alphabets(series('𝐴', '𝑔'), 'h', series('𝑖', '𝑧')))
+
+const Fixed = {
+  quad: '    ', 
+  C: Unicode.mathbb.C,
+  R: Unicode.mathbb.R,
+  Z: Unicode.mathbb.Z,
+  Q: Unicode.mathbb.Q,
+}
+
+const Binary = {}
+
+
+const macrohead = backslash.follow(letters).second()
+
+const fixedMacro = macrohead.map(x => Fixed[x] || `\\${x}`)
+
+const unaryMacro = macrohead.follow(values).map(xs => {
   let [macro, value] = xs
-  if (!(handler = Mono[macro]))
+  if (!(handler = Unary[macro]))
     return `\\${macro}{${value}}`
   return handler(value)
-}
+})
 
 const text = token(x => x != '\\').plus()
-  .or(monoargue)
+  .or(unaryMacro)
+  .or(fixedMacro)
   .plus()
 
-const source = String.raw`
-Hello, this is integers denoted by \mathbb{Z}, 
-I will use \text{Gal}(\mathbb{K}), \mathbb{Q} and \mathbb{A} ...
-`
+const source = String.raw`Hello, this is integers denoted by \Z, 
+I will use \text{Gal}(\mathbb{K}), \C, \Q, \mathfrak{p} and \mathbb{A} ...`
+
 console.log(text.parse(source))
 
 
