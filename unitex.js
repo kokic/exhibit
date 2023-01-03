@@ -1,4 +1,20 @@
 
+const greeks = [
+  'Alpha', 'Beta', 'Gamma', 'Delta',
+  'Epsilon', 'Zeta', 'Eta', 'Theta',
+  'Iota', 'Kappa', 'Lambda', 'Mu',
+  'Nu', 'Xi', 'Omicron', 'Pi',
+  'Rho', 'Sigma', 'Tau', 'Upsilon',
+  'Phi', 'Chi', 'Psi', 'Omega',
+
+  'alpha', 'beta', 'gamma', 'delta',
+  'epsilon', 'zeta', 'eta', 'theta',
+  'iota', 'kappa', 'lambda', 'mu',
+  'nu', 'xi', 'omicron', 'pi',
+  'rho', 'sigma', 'tau', 'upsilon',
+  'phi', 'chi', 'psi', 'omega'
+]
+
 const proxy = f => function (...xs) {
   return f(this, ...xs)
 }
@@ -115,14 +131,17 @@ const digits = digit.plus()
 const letter = token(x => x.boundedIn('a', 'z') || x.boundedIn('A', 'Z'))
 const letters = letter.plus()
 
-const values = digit.or(letter).plus()
-  .or(() => braces(values))
-
 const backslash = character('\\')
 
 const lbrace = character('{')
 const rbrace = character('}')
 const braces = x => lbrace.follow(x).skip(rbrace).second()
+
+
+const value = digit.or(braces(() => text))
+
+// digit.or(letter).plus()
+// .or(() => braces(values))
 
 
 
@@ -142,6 +161,12 @@ const alphabets = function () {
 }
 
 
+// const alphabetGreeks = function () {
+//   let map = new Object()
+//   greeks.forEach((x, i) => map[x] = arguments[i])
+//   return map
+// }
+
 const typeface = function (name, data) {
   Unicode[name] = data
   Unary[name] = s => Array.from(s)
@@ -152,25 +177,54 @@ const typeface = function (name, data) {
 const Unicode = {}
 
 const Unary = {
-  text: s => s,
+  text: x => x, 
+  // bar: x => `${x}\u0304`
 }
 
 
-typeface('mathbb', alphabets(
-  ...'𝔸𝔹ℂ', ...series('𝔻', '𝔾'), 'ℍ', ...series('𝕀', '𝕄'), 
-  ...'ℕ𝕆ℙℚℝ', ...series('𝕊', '𝕐'), 'ℤ', ...series('𝕒', '𝕫'))
+typeface('mathbb', alphabets(...'𝔸𝔹ℂ', ...series('𝔻', '𝔾'),
+  'ℍ', ...series('𝕀', '𝕄'), ...'ℕ𝕆ℙℚℝ', ...series('𝕊', '𝕐'),
+  'ℤ', ...series('𝕒', '𝕫'))
 )
 typeface('mathfrak', alphabets(...series('𝕬', '𝖟')))
+typeface('mathscr', alphabets('𝒜ℬ𝒞𝒟ℰℱ𝒢ℋℐ𝒥𝒦ℒℳ', ...series('𝒩', '𝒬'),
+  'ℛ', ...series('𝒮', '𝒹'), 'ℯ', '𝒻', 'g', ...series('𝒽', '𝓃'),
+  'ℴ', ...series('𝓅', '𝓏'))
+)
 
 typeface('textit', alphabets(series('𝐴', '𝑔'), 'h', series('𝑖', '𝑧')))
+typeface('textsf', alphabets(series('𝖠', '𝗓')))
+typeface('texttt', alphabets(series('𝙰', '𝚣')))
+
 
 const Fixed = {
-  quad: '    ', 
-  C: Unicode.mathbb.C,
-  R: Unicode.mathbb.R,
+  N: Unicode.mathbb.N,
   Z: Unicode.mathbb.Z,
   Q: Unicode.mathbb.Q,
+  R: Unicode.mathbb.R,
+  C: Unicode.mathbb.C,
+  natnums: Unicode.mathbb.N,
+  reals: Unicode.mathbb.R,
+  Reals: Unicode.mathbb.R,
+  cnums: Unicode.mathbb.C,
+  Complex: Unicode.mathbb.C,
+  Bbbk: Unicode.mathbb.k,
+  aleph: 'ℵ',
+  alef: 'ℵ',
+  alefsym: 'ℵ',
+  ell: 'ℓ',
+  partial: '∂',
+  nabla: '∇',
+  wp: '℘',
+  weierp: '℘',
+  quad: ' '.repeat(4),
+  qquad: ' '.repeat(6),
 }
+
+Unicode.greeks = series('Α', 'Ρ') + series('Σ', 'Ω') +
+  series('α', 'ρ') + series('σ', 'ω')
+greeks.forEach((x, i) => Fixed[x] = Unicode.greeks[i])
+
 
 const Binary = {}
 
@@ -179,22 +233,22 @@ const macrohead = backslash.follow(letters).second()
 
 const fixedMacro = macrohead.map(x => Fixed[x] || `\\${x}`)
 
-const unaryMacro = macrohead.follow(values).map(xs => {
+const unaryMacro = macrohead.follow(value).map(xs => {
   let [macro, value] = xs
   if (!(handler = Unary[macro]))
     return `\\${macro}{${value}}`
   return handler(value)
 })
 
-const text = token(x => x != '\\').plus()
+
+const special = x => x == '\\' || x == '{' || x == '}' 
+const text = token(x => !special(x)).plus()
   .or(unaryMacro)
   .or(fixedMacro)
   .plus()
 
-const source = String.raw`Hello, this is integers denoted by \Z, 
-I will use \text{Gal}(\mathbb{K}), \C, \Q, \mathfrak{p} and \mathbb{A} ...`
+// console.log(braces(text).parse(String.raw`{123}`))
 
+const source = String.raw`G_\Q := Gal(\bar{\Q}/\Q), \mathbb{G}_m := Spec(\Z[U, U^-1])`
 console.log(text.parse(source))
-
-
 
