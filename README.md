@@ -1,5 +1,5 @@
 
-repository [github.com/kokic/exhibit](https://github.com/kokic/exhibit) and deployment [kokic.github.io/exhibit/geometry](https://kokic.github.io/exhibit/geometry). 
+repository [github.com/kokic/exhibit](https://github.com/kokic/exhibit) and deployment [kokic.github.io/exhibit](https://kokic.github.io/exhibit). 
 
 - [CeTZ](https://github.com/johannes-wolf/cetz) Examples for Geometry, [kokic.github.io/exhibit/geometry](https://kokic.github.io/exhibit/geometry).
 
