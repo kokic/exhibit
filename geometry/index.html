@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=1000, initial-scale=1">
+  <title>CeTZ Examples for Geometry</title>
+
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.3/dist/katex.min.css"
+    integrity="sha384-Juol1FqnotbkyZUT5Z7gUPjQ9gzlwCENvUZTpQBAPxtusdwFLRy382PSDx5UUJ4/" crossorigin="anonymous">
+
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.3/dist/katex.min.js"
+    integrity="sha384-97gW6UIJxnlKemYavrqDHSX3SiygeOwIZhwyOKRfSaf0JWKRVj9hLASHgFTzT+0O"
+    crossorigin="anonymous"></script>
+
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.3/dist/contrib/auto-render.min.js"
+    integrity="sha384-+VBxd3r6XgURycqtZ117nYw44OOcIax56Z4dCRWbxyPt0Koah1uHoK0o4+/RRE05" crossorigin="anonymous">
+    </script>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+      renderMathInElement(document.body, {
+        delimiters: [{ left: '$', right: '$', display: false }],
+      });
+    });
+  </script>
+
+
+  <style>
+    .wrapper {
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      /* grid-gap: 5px; */
+      grid-auto-rows: minmax(auto, auto);
+      padding: 1em;
+    }
+
+    .wrapper>div {
+      /* background-color: rgb(230, 243, 243); */
+      /* border-radius: 5px; */
+      text-align: center;
+      border: 1px solid;
+    }
+
+    .text-center {
+      text-align: center;
+    }
+  </style>
+</head>
+
+<body>
+
+  <h1 class="text-center">$\text{\textsf{CeTZ} Examples for Geometry}$</h1>
+  <p class="text-center">$\text{Click on the example image to jump to the code.}$</p>
+
+  <div class="wrapper">
+    <div>
+      <a href="https://github.com/kokic/exhibit/blob/main/geometry/typst/real-elliptic-curve.typ">
+        <img height="100%" src="./gallery/real-elliptic-curve.svg">
+      </a>
+    </div>
+    <div>
+      <a href="https://github.com/kokic/exhibit/blob/main/geometry/typst/hodge-theater.typ">
+        <img width="100%" src="./gallery/hodge-theater.svg">
+      </a>
+    </div>
+    <div>
+      <a href="https://github.com/kokic/exhibit/blob/main/geometry/typst/complex-elliptic-curve.typ">
+        <img width="100%" src="./gallery/complex-elliptic-curve.svg">
+      </a>
+    </div>
+
+    <div style="grid-column: 1 / 3;">
+      <a href="https://github.com/kokic/exhibit/blob/main/geometry/typst/fuchsian-uniformization.typ">
+        <img width="100%" src="./gallery/fuchsian-uniformization.svg">
+      </a>
+    </div>
+    <div style="grid-column: 3 / 4;">
+      <a href="https://github.com/kokic/exhibit/blob/main/geometry/typst/sphere.typ">
+        <img height="100%" src="./gallery/sphere.svg">
+      </a>
+    </div>
+
+  </div>
+
+</body>
+
+</html>
