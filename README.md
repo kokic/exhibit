@@ -5,6 +5,6 @@ repository [github.com/kokic/exhibit](https://github.com/kokic/exhibit) and depl
 
 - The combinatorial structure of a D-Θ±ell-Hodge theater, [kokic.github.io/exhibit/étale](https://kokic.github.io/exhibit/étale). 
 
-- A Proof of GabeNewell Cannot Count To Three Theorem, [kokic.github.io/exhibit/crystal/gabe-newell-number](https://kokic.github.io/exhibit/crystal/gabe-newell-number)
+- A Proof of Gabe Newell Cannot Count To Three Theorem, [kokic.github.io/exhibit/crystal/gabe-newell-number](https://kokic.github.io/exhibit/crystal/gabe-newell-number).
 
-- A Typescript Parser Combinator, [kokic.github.io/exhibit/crystal/parser-combinator](https://kokic.github.io/exhibit/crystal/parser-combinator)
+- A Typescript Parser Combinator, [kokic.github.io/exhibit/crystal/parser-combinator](https://kokic.github.io/exhibit/crystal/parser-combinator).
