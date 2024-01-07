@@ -1,0 +1,104 @@
+
+body {
+  font-family: "JetBrains Mono", monospace;
+  font-size: 18px;
+  padding: 2rem 5rem;
+  background-color: #fffef0;
+}
+
+#container {
+  padding: 2rem 5rem;
+}
+
+.day {
+  color: black;
+  background-color: #fff;
+  box-shadow: rgba(0, 0, 0, 0.03) 0px 0px 10px 5px;
+}
+
+/* .night {} */
+
+#footer {
+  margin-top: 1rem;
+  text-align: center;
+}
+
+h2,
+h3,
+h4 {
+  font-weight: normal;
+}
+
+label {
+  font-size: 1.2rem;
+  user-select: none;
+}
+
+a {
+  color: rgba(56, 56, 56, 0.5);
+  text-decoration: none;
+  background-position: bottom;
+  background-size: 100% 0.35em;
+  background-repeat: repeat-x;
+  -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+}
+
+
+
+a:hover {
+  color: #d480aa;
+  background-image: linear-gradient(transparent, transparent 4px, #d480aa 4px, #d480aa);
+  background-size: 100% 0.38em;
+}
+
+.vert-top {
+  margin: 0 5px;
+  vertical-align: top;
+}
+
+#typeface-set {
+  margin: 5px 0px;
+}
+
+#unicode-board {
+  /* overflow-x: scroll; */
+  font-size: 20px;
+  font-family: TexGyrePagella, LatinModern-Math, serif, sans-serif;
+}
+
+#optionals {
+  margin: 1rem 0;
+}
+
+.optional {
+  display: inline;
+}
+
+@media screen and (max-width: 900px) {
+  /* .cm-editor {
+    font-size: 16px;
+  }
+
+  #unicode-board {
+    font-size: 16px;
+  } */
+
+  body {
+    font-size: 16px;
+    padding: 0;
+  }
+
+  #container {
+    padding: 1rem;
+  }
+
+  #unicode-board {
+    font-size: 18px;
+  }
+
+  .console {
+    display: block;
+  }
+
+
+}
