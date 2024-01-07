@@ -38,6 +38,9 @@
     const identifier = spanUse("identifier");
     const lineNumber = spanUse("line-number");
     const alignNumber = (n, max) => " ".repeat(`${max}`.length - `${n}`.length) + n;
+    const margin2 = " ".repeat(2);
+    const margin4 = " ".repeat(4);
+    const margin8 = " ".repeat(8);
 
     const hightlightToken = s => s.replace(
       /(inductive|open|def|instance|axiom|theorem)[ ]+([a-zA-Z][\w]*)/g,
@@ -48,7 +51,8 @@
       const code = document.querySelector("code");
       const lines = code.innerText.split("\n");
       const lineNumberRepr = n => lineNumber(alignNumber(n, lines.length));
-      const lineNumberBinded = lines.map((x, i) => `  ${lineNumberRepr(i + 1)}  ${x}`);
+      const margin = (x, i) => `${margin2}${lineNumberRepr(i + 1)}  ${x}${margin8}`
+      const lineNumberBinded = lines.map(margin);
       const content = lineNumberBinded.map(hightlightToken).join("\n");
       code.innerHTML = content;
     });

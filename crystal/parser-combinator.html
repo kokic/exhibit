@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta name="viewport" content="initial-scale=1" charset="UTF-8">
+  <title>A Typescript Parser Combinator</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono&display=swap" rel="stylesheet">
+  <style>
+    body {
+      color: white;
+      background-color: #24292E;
+      font-size: 1.25em;
+    }
+
+    code {
+      font-family: "Jetbrains Mono", monospace;
+    }
+
+    .keyword {
+      color: #F97583;
+    }
+
+    .identifier {
+      color: #B392F0;
+    }
+
+    .line-number {
+      color: #444D56;
+    }
+
+    .symbol {
+      color: #78c0ff;
+    }
+
+    .string {
+      color: #a6d7ff;
+    }
+  </style>
+
+  <script>
+    const spanUse = className => content => `<span class="${className}">${content}</span>`;
+    const keyword = spanUse("keyword");
+    const identifier = spanUse("identifier");
+    const lineNumber = spanUse("line-number");
+    const symbol = spanUse("symbol");
+    const string = spanUse("string");
+    const alignNumber = (n, max) => " ".repeat(`${max}`.length - `${n}`.length) + n;
+    const margin2 = " ".repeat(2);
+    const margin4 = " ".repeat(4);
+    const margin8 = " ".repeat(8);
+
+    const hightlightPhase = [
+      { source: /(['"])((?:(?!\1).|\\.)*)\1/g, target: string("$1$2$1") }, 
+      { source: /(type|const)[ ]+([a-zA-Z][\w]*)/g, target: `${keyword("$1")} ${identifier("$2")}` },
+    ];
+    const hightlightToken = content =>
+      hightlightPhase.reduce((s, t) => s.replace(t.source, t.target), content);
+
+    document.addEventListener("DOMContentLoaded", function () {
+      const code = document.querySelector("code");
+      const lines = code.innerText.split("\n");
+      const lineNumberRepr = n => lineNumber(alignNumber(n, lines.length));
+      const margin = (x, i) => `${margin2}${lineNumberRepr(i + 1)}  ${x}${margin8}`
+      const content = lines.map(hightlightToken).map(margin).join("\n");
+      code.innerHTML = content;
+    });
+  </script>
+</head>
+
+<body>
+  <pre><code class="highlight-ts">
+
+type ParseResult<α> =
+  | { type: "success", pos: StringIterator, res: α }
+  | { type: "error", pos: StringIterator, err: string }
+
+const success = <α>(pos: StringIterator, res: α)
+  : ParseResult<α> => ({ type: "success", pos, res })
+
+const error = <α>(pos: StringIterator, err: string)
+  : ParseResult<α> => ({ type: "error", pos, err })
+
+type Parsec<α> = (input: StringIterator) => ParseResult<α>
+
+const pure = <α>(a: α): Parsec<α> => it => success(it, a)
+
+const bind = <α, β>(f: Parsec<α>, g: (a: α) => Parsec<β>): Parsec<β> =>
+  (it: StringIterator) => match(f(it))
+    .with({ type: "success" }, ({ pos, res }) => g(res)(pos))
+    .with({ type: "error" }, ({ pos, err }) => error<β>(pos, err))
+    .exhaustive()
+
+const fail = <α>(msg: string): Parsec<α> => it => error(it, msg)
+
+const orElse = <α>(p: Parsec<α>, q: Parsec<α>): Parsec<α> =>
+  (it: StringIterator) => match(p(it))
+    .with({ type: "success" }, r => r)
+    .with({ type: "error" }, r => it == r.pos ? q(it) : r)
+    .exhaustive()
+
+const attempt = <α>(p: Parsec<α>): Parsec<α> =>
+  (it: StringIterator) => match(p(it))
+    .with({ type: "success" }, r => r)
+    .with({ type: "error" }, ({ err }) => error<α>(it, err))
+    .exhaustive()
+
+const unexpectedEndOfInput = "unexpected end of input"
+
+const anyChar: Parsec<char> = it => it.hasNext()
+  ? success(it.next(), it.curr())
+  : error(it, unexpectedEndOfInput)
+
+const pchar = (c: char): Parsec<char> =>
+  attempt(bind(anyChar, it => it == c ? pure(c) : fail(`expected: ${c}`)))
+
+  </code></pre>
+</body>
