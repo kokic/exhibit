@@ -3,21 +3,80 @@
 
 <head>
   <meta name="viewport" content="initial-scale=1" charset="UTF-8">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.3/dist/katex.min.css"
-    integrity="sha384-Juol1FqnotbkyZUT5Z7gUPjQ9gzlwCENvUZTpQBAPxtusdwFLRy382PSDx5UUJ4/" crossorigin="anonymous">
-
-  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.3/dist/katex.min.js"
-    integrity="sha384-97gW6UIJxnlKemYavrqDHSX3SiygeOwIZhwyOKRfSaf0JWKRVj9hLASHgFTzT+0O"
-    crossorigin="anonymous"></script>
-
-  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.3/dist/contrib/auto-render.min.js"
-    integrity="sha384-+VBxd3r6XgURycqtZ117nYw44OOcIax56Z4dCRWbxyPt0Koah1uHoK0o4+/RRE05" crossorigin="anonymous">
-    </script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC&display=swap" rel="stylesheet">
 
   <title>新春祝福</title>
+
+  <style>
+    .content {
+      margin: 5vh auto;
+      width: 40em;
+    }
+
+    p {
+      text-indent: 2em;
+      font-size: 1.5em;
+      font-family: "Noto Serif SC";
+    }
+
+    hr {
+      margin-top: 4em;
+    }
+
+    sup::before {
+      padding-left: 5px;
+      content: "";
+    }
+
+    .note {
+      margin: 0;
+      font-size: 1em;
+    }
+  </style>
 </head>
 
-<body></body>
+<body>
 
+  <div class="content">
+    <p>
+      本人<sup>1</sup>在此给您送上新春<sup>2</sup>祝福<sup>3</sup>,
+      祝您<span id="zodiac"></span>年<sup>4</sup>大吉<sup>5</sup>, 财源广进<sup>6</sup>,
+      阖家<sup>7</sup>幸福!
+    </p>
+
+    <hr />
+
+    <p class="note"><sup>1</sup>此祝福是以个人身份送上的, 不代表任何组织、机构的立场。</p>
+
+    <p class="note"><sup>2</sup>「新春」指中国农历 (Chinese Lunar Calendar) 所确立的时间范围, 并不特指某一节日。
+      如果您基于自身宗教信仰、文化认同和生活习惯并无庆祝中国农历新年的习惯, 请勿将其理解为干涉个人自由。
+    </p>
+
+    <p class="note"><sup>3</sup>「祝福」是一种基于传统文化观念的美好希望, 不代表承诺某一种结果将会发生
+      或不会发生。
+    </p>
+
+    <p class="note"><sup>4</sup>如果在您的传统文化中不存在「龙年」(例如, 哈萨克族的十二生肖为鼠、牛、猎豹、
+      兔、蜗牛、蛇、马、绵羊、猴、鸡、狗、野猪), 可以联系笔者进行替换。
+    </p>
+
+    <p class="note"><sup>5</sup>「大吉」不代表对任何有价证券价格或者资产价格的预测, 不构成投资建议。</p>
+
+    <p class="note"><sup>6</sup>「财源广进」是一种美好的祝愿,不代表笔者承诺给付任何额度的财物。</p>
+
+    <p class="note"><sup>7</sup>「家」并不局限于户口本中的家庭成员范围, 也包括与直系、旁系亲属组成的家庭
+      或者独居的情况。您可以根据自己的价值认同对其做出定义。
+    </p>
+  </div>
+
+  <script>
+    const zodiacAnimals = "鼠牛虎兔龙蛇马羊猴鸡狗猪".split("");
+    const year = Number.parseInt(new Date().getFullYear());
+    const zodiac = zodiacAnimals[(year - 4) % 12];
+    document.querySelector("#zodiac").innerHTML = zodiac;
+  </script>
+</body>
 
 </html>
