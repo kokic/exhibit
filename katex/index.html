@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=JetBrains+Mono">
+  <script src="https://codemirror.net/codemirror.js"></script>
+
+  <script src="./dist/legacy-modes-stex/stex.js"></script>
+
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.21/dist/katex.min.css" integrity="sha384-zh0CIslj+VczCZtlzBcjt5ppRcsAmDnRem7ESsYwWwg3m/OaJ2l4x7YBZl9Kxxib" crossorigin="anonymous">
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.21/dist/katex.min.js" integrity="sha384-Rma6DA2IPUwhNxmrB/7S3Tno0YY7sFu9WSYMCuulLhIqYSGZ2gKCJWIqhBWqMQfh" crossorigin="anonymous"></script>
+
+  <link rel="stylesheet" href="./page/css/site.css">
+
+  <title>KaTeX Happening</title>
+</head>
+
+<body>
+
+
+  <div id="container" class="day">
+
+    <div id="header">
+      <h2>KaTeX Happening <!-- 瞬間 --> </h2>
+    </div>
+
+    <div id="leftside">edit or paste</div>
+    <div id="unicode-board"></div>
+  </div>
+
+  <div id="footer">
+    Created by <a class="vert-top" href="https://github.com/kokic" target="_blank">kokic</a> |
+    <a class="vert-top" href="https://github.com/kokic/exhibit/blob/main/LICENSE" target="_blank">MIT License</a> |
+    <a class="vert-top" href="https://github.com/kokic/exhibit/katex" target="_blank">Github</a>
+  </div>
+
+  <script>
+
+    const { basicSetup } = CM["codemirror"]
+    const { EditorView, keymap } = CM["@codemirror/view"]
+    const { EditorState } = CM["@codemirror/state"]
+
+    const { StreamLanguage } = CM["@codemirror/language"]
+    const { autocompletion, snippetCompletion } = CM["@codemirror/autocomplete"]
+
+    const container = document.getElementById('container');
+    (new Date().getHours() >= 18) && (container.classList.add('night'));
+
+    const createElement = name => document.createElement(name)
+
+    Element.prototype.bindParent = function (parent) {
+      parent.appendChild(this)
+    }
+
+    const elemLeftside = document.getElementById('leftside')
+
+    const queriesData = {}
+    const search = decodeURI(window.location.search)
+    search && search.substring(1).split('&')
+      .map(x => x.split('='))
+      .forEach(x => queriesData[x[0]] = x[1] || true)
+
+
+    const theme = EditorView.theme({
+      ".cm-content": {
+        fontFamily: "JetBrains Mono",
+      },
+      "&.cm-focused": {
+        outline: "none",
+      },
+      ".cm-gutters": {
+        backgroundColor: 'transparent',
+        color: "#ccc",
+        border: "none",
+      }
+    })
+
+    const editorView = new EditorView({
+      doc: queriesData['tex'] || '' /* '\n'.repeat(2) // only for test */,
+      extensions: [
+        basicSetup,
+        theme,
+        StreamLanguage.define(stexMath),
+        EditorView.updateListener.of(x => x.docChanged && updateResultBoard()),
+      ],
+      parent: elemLeftside,
+    })
+
+    const elemUnicodeBoard = document.getElementById('unicode-board')
+
+    const updateResultBoard = function () {
+      let s = editorView.state.doc.toString();
+      if (queriesData['jp']) {
+        s = s.replaceAll(String.raw`\pi z`, String.raw`\pi^z`)
+          .replaceAll(String.raw`\Gamma`, (Math.random() < 0.5) ? String.raw`\text{T}` : "7")
+          .replace(/\\.(\\mathscr\{Z\}|\\mathcal\{Z\}|z|Z)/g, `主`)
+          .replace(/\\sum\^[\{]*([^\}\s]*)[\}]*_[\{]*([^\}\s]*)[\}]*/g, String.raw`\underset{$2}{\overset{$1}{\raisebox{-0.5em}{\huge $\overline 2$}}}`)
+          .replace(/\\sum_[\{]*([^\}\s]*)[\}]*\^[\{]*([^\}\s]*)[\}]*/g, String.raw`\underset{$1}{\overset{$2}{\raisebox{-0.5em}{\huge $\overline 2$}}}`)
+          .replace(/\\sum\^[\{]*([^\}\s]*)[\}]*/g, String.raw`\underset{}{\overset{$1}{\raisebox{-0.5em}{\huge $\overline 2$}}}`)
+          .replace(/\\sum_[\{]*([^\}\s]*)[\}]*/g, String.raw`\underset{$1}{\overset{}{\raisebox{-0.5em}{\huge $\overline 2$}}}`)
+          .replace(/\\sum/g, String.raw`\underset{}{\overset{}{\raisebox{-0.5em}{\huge $\overline 2$}}}`)
+      }
+
+      const html = katex.renderToString(s, {
+        throwOnError: false,
+        displayMode: true,
+      });
+      elemUnicodeBoard.innerHTML = html;
+    }
+
+    document.addEventListener('DOMContentLoaded', updateResultBoard);
+  </script>
+</body>
+
+</html>

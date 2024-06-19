@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <title>Math CJK - Text Formatter</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    body,
+    textarea {
+      color: white;
+      background-color: rgb(51, 51, 51);
+    }
+
+    textarea {
+      resize: vertical;
+      padding: 5px;
+      min-height: 1.5em;
+      line-height: 1.5em;
+      font-size: 1.2em;
+    }
+
+    h1 {
+      text-align: center;
+    }
+
+    h3 {
+      font-weight: normal;
+    }
+
+    .main {
+      margin: 4em 0;
+      display: flex;
+      gap: 16px;
+      flex-direction: column;
+    }
+
+    @media (min-width: 640px) {
+      .main {
+        margin: 4em 15%;
+      }
+    }
+  </style>
+</head>
+
+
+<body>
+  <h1>Text Formatter</h1>
+  <div class="main">
+    <textarea id="source" rows="10" placeholder="paste text here"></textarea>
+    <div>
+      <h3>Output</h3>
+      <div id="formated"></div>
+    </div>
+  </div>
+
+</body>
+
+<script type="module">
+  import { formatter } from "./formatter.js";
+  const formated = document.querySelector('#formated');
+  const source = document.querySelector('#source');
+  source.addEventListener('input', function (event) {
+    formated.innerText = formatter(source.value);
+  });
+</script>
+
+</html>
