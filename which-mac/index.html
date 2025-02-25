@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Which MacBook</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono&display=swap" rel="stylesheet">
+
+  <style>
+    body {
+      background-color: rgb(36, 41, 46);
+      color: rgb(225, 228, 232);
+      font-family: "JetBrains Mono";
+    }
+
+    td {
+      font-size: 1em;
+      padding: 0px 0.5em;
+    }
+
+    span.bar {
+      background-color: #ffdc00;
+      height: 1em;
+      border-radius: 0.2em;
+      vertical-align: sub;
+      display: inline-block;
+    }
+
+    details.configs {
+      margin: 1em 0.5em 0.5em 0.5em;
+    }
+
+    div.config {
+      margin: 0.5em 0.2em;
+    }
+
+    .config input {
+      border-radius: 0.2em;
+      margin: 0em 0.5em;
+    }
+
+    #compute {
+      margin: 1em;
+    }
+  </style>
+</head>
+
+<body>
+  <h1 style="text-align: center;">Which MacBook should I buy?</h1>
+  <main></main>
+  <details class="configs" open>
+    <summary>Configs</summary>
+
+    <template id="config-table-row">
+      <tr>
+        <td class="config-name">name</td>
+        <td><label class="config-label"><input class="config-input" required></label></td>
+        <td class="config-unit">unit</td>
+        <td>&emsp; weight: <input class="config-weight" required size='2' maxlength='2' value='20'>&nbsp;%</td>
+      </tr>
+    </template>
+  </details>
+
+  <button id="compute">compute</button>
+
+  <script>
+
+    const baseline = {
+      'memory': { value: 48, unit: 'G', weight: 0.3 },
+      'disk': { value: 1, unit: 'T', weight: 0.1 },
+      'vellamo': { value: 1455, unit: '', weight: 0.4 },
+      'price': { value: 24499, unit: 'RMB', weight: 0.2, inverse: true },
+    };
+
+    const initRowsData = [
+      [['M4 Max (16 + 40)'], [
+        { name: 'memory', quantity: 64 },
+        { name: 'disk', quantity: 1 },
+        { name: 'vellamo', quantity: 2093 },
+        { name: 'price', quantity: 33499 },
+      ]],
+      [['M4 Max (16 + 40)'], [
+        { name: 'memory', quantity: 48 },
+        { name: 'disk', quantity: 1 },
+        { name: 'vellamo', quantity: 2093 },
+        { name: 'price', quantity: 31999 },
+      ]],
+      [['M4 Max (16 + 32)'], [
+        { name: 'memory', quantity: 36 },
+        { name: 'disk', quantity: 1 },
+        { name: 'vellamo', quantity: 1899 },
+        { name: 'price', quantity: 27999 },
+      ]],
+      [['M4 Pro (14 + 20)'], [
+        { name: 'memory', quantity: 48 },
+        { name: 'disk', quantity: 1 },
+        { name: 'vellamo', quantity: 1779 },
+        { name: 'price', quantity: 24999 },
+      ]],
+      [['M4 Pro (14 + 20)'], [
+        { name: 'memory', quantity: 24 },
+        { name: 'disk', quantity: 0.5 },
+        { name: 'vellamo', quantity: 1779 },
+        { name: 'price', quantity: 22999 },
+      ]],
+      [['M4 Pro (14 + 20) *'], [
+        { name: 'memory', quantity: 24 },
+        { name: 'disk', quantity: 0.5 },
+        { name: 'vellamo', quantity: 1779 },
+        { name: 'price', quantity: 20999 },
+      ]],
+      [['M3 Max'], [
+        { name: 'memory', quantity: 48 },
+        { name: 'disk', quantity: 1 },
+        { name: 'vellamo', quantity: 1708 },
+        { name: 'price', quantity: 25999 },
+      ]],
+      [['M3 Max *'], [
+        { name: 'memory', quantity: 48 },
+        { name: 'disk', quantity: 1 },
+        { name: 'vellamo', quantity: 1708 },
+        { name: 'price', quantity: 23999 },
+      ]],
+      [['M3 Max'], [
+        { name: 'memory', quantity: 36 },
+        { name: 'disk', quantity: 1 },
+        { name: 'vellamo', quantity: 1708 },
+        { name: 'price', quantity: 22999 },
+      ]],
+      [['M3 Max *'], [
+        { name: 'memory', quantity: 36 },
+        { name: 'disk', quantity: 1 },
+        { name: 'vellamo', quantity: 1708 },
+        { name: 'price', quantity: 20999 },
+      ]],
+      [['M3 (8 + 10) Air'], [
+        { name: 'memory', quantity: 24 },
+        { name: 'disk', quantity: 0.5 },
+        { name: 'vellamo', quantity: 712 },
+        { name: 'price', quantity: 14999 },
+      ]],
+      [['M3 Max ?'], [
+        { name: 'memory', quantity: 48 },
+        { name: 'disk', quantity: 1 },
+        { name: 'vellamo', quantity: 1708 },
+        { name: 'price', quantity: 31069 },
+      ]],
+      [['M1 Max ?'], [
+        { name: 'memory', quantity: 64 },
+        { name: 'disk', quantity: 4 },
+        { name: 'vellamo', quantity: 836 },
+        { name: 'price', quantity: 20889 },
+      ]],
+      [['M1 Max ?'], [
+        { name: 'memory', quantity: 32 },
+        { name: 'disk', quantity: 1 },
+        { name: 'vellamo', quantity: 836 },
+        { name: 'price', quantity: 14429 },
+      ]],
+    ];
+
+    const DEFAULT_VALUE_SCALE = 20;
+
+    const valueToWidth = (value) => `${value}em`;
+
+    const createTableRow = function (textCells, value) {
+      const tableRow = document.createElement('tr');
+
+      for (const text of textCells) {
+        const dataCell = document.createElement('td');
+        dataCell.innerText = text;
+        tableRow.appendChild(dataCell);
+      }
+
+      const valueCell = document.createElement('td');
+      const span = document.createElement('span');
+      span.className = 'bar';
+      span.style.width = valueToWidth(value);
+      valueCell.appendChild(span);
+      tableRow.appendChild(valueCell);
+
+      return tableRow;
+    };
+
+    const createTable = function (rowsData, title) {
+      const table = document.createElement('table');
+      const tableBody = document.createElement('tbody');
+
+      for (const rowData of rowsData) {
+        const row = createTableRow(rowData.text, rowData.value);
+        tableBody.appendChild(row);
+      }
+
+      table.appendChild(tableBody);
+      return table;
+    };
+
+    // input: [{ weight: number, quantity: number, inverse: bool, name: string, display: bool }]
+    const computeRowData = function (baseline, text, quantities, scale = DEFAULT_VALUE_SCALE) {
+      let value = 0;
+      let justText = [].concat(text);
+
+      for (const { weight, quantity, inverse, name, display } of quantities) {
+        const base = baseline[name];
+        const weightValue = weight || base.weight;
+
+        if (display == undefined || display) {
+          justText.push(`${quantity} ${base.unit}`);
+        }
+
+        const relativeQuantity = quantity / base.value;
+        const relativeValue = (inverse || base.inverse) ? (1 / relativeQuantity) : relativeQuantity;
+        const term = weightValue * relativeValue;
+        value += term;
+      }
+
+      return { text: justText, value: value * scale };
+    };
+
+    const computeBaselineRowsData = (data) =>
+      data.map(([name, params]) => computeRowData(baseline, name, params));
+
+    const main = document.querySelector('main');
+    const computeMacBookValues = () => {
+      main.replaceChildren(createTable(computeBaselineRowsData(initRowsData)));
+    };
+    computeMacBookValues();
+    computeMacBookValues();
+
+    const configs = document.querySelector('.configs');
+    const configsTableBody = document.createElement('tbody');
+    const templateTableRow = document.querySelector('#config-table-row');
+
+    const createNewConfigRow = function (name, value, unit, weight) {
+      const cloneRow = templateTableRow.content.cloneNode(true);
+      cloneRow.querySelector('.config-name').textContent = name;
+      cloneRow.querySelector('.config-unit').textContent = unit;
+
+      const weightInput = cloneRow.querySelector('.config-weight');
+      weightInput.id = `config-weight-${name}`;
+      weightInput.value = weight * 100;
+
+      const label = cloneRow.querySelector('.config-label');
+      label.for = name;
+
+      const input = cloneRow.querySelector('.config-input');
+      input.id = `config-value-${name}`;
+      input.name = name;
+      input.placeholder = value;
+
+      return cloneRow;
+    }
+
+    for (const name of Object.keys(baseline)) {
+      const { value, unit, weight } = baseline[name];
+      configsTableBody.appendChild(createNewConfigRow(name, value, unit, weight));
+    };
+
+    const configsTable = document.createElement('table');
+    configsTable.style.marginLeft = '1em';
+    configsTable.appendChild(configsTableBody);
+
+    const updateBaselineBy = (key, name, map) => {
+      const textValue = configsTableBody.querySelector(`#config-${key}-${name}`).value;
+      if (!!textValue) {
+        baseline[name][key] = map(textValue);
+      }
+    };
+
+    const updateBaseline = () => {
+      for (const name of Object.keys(baseline)) {
+        updateBaselineBy('value', name, x => x);
+        updateBaselineBy('weight', name, x => x / 100);
+      }
+    };
+
+    const computeDataButton = document.body.querySelector('#compute');
+    computeDataButton.addEventListener('click', () => {
+      updateBaseline();
+      computeMacBookValues();
+    });
+
+    configs.appendChild(configsTable);
+  </script>
+
+</body>
+
+</html>
