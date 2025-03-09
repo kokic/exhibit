@@ -8,6 +8,7 @@
   <style>
     body,
     textarea {
+      font-family: monospace;
       color: white;
       background-color: rgb(51, 51, 51);
     }
@@ -35,6 +36,24 @@
       flex-direction: column;
     }
 
+    button {
+      font-family: monospace;
+      font-size: 1.2em;
+      background: none;
+      border: none;
+      padding: 0;
+      color: white;
+    }
+    
+    button:hover {
+      color: rgb(184, 184, 184);
+    }
+
+    button:active {
+      color: rgb(184, 184, 184);
+      font-weight: bold;
+    }
+
     @media (min-width: 640px) {
       .main {
         margin: 4em 15%;
@@ -49,8 +68,15 @@
   <div class="main">
     <textarea id="source" rows="10" placeholder="paste text here"></textarea>
     <div>
+      <button id="clear-source">Clear</button>
+      &emsp;
+      <button id="copy-output">Copy</button>
+    </div>
+    
+    <div>
       <h3>Output</h3>
-      <div id="formated"></div>
+      <pre id="formatted"></div>
+      <input id="formatted-selected" style="display: none;"></input>
     </div>
   </div>
 
@@ -58,11 +84,28 @@
 
 <script type="module">
   import { formatter } from "./formatter.js";
-  const formated = document.querySelector('#formated');
+
+  const ignoreAllSpaces = window.location.href.endsWith("?compact");
+  const formatted = document.querySelector('#formatted');
   const source = document.querySelector('#source');
   source.addEventListener('input', function (event) {
-    formated.innerText = formatter(source.value);
+    const src = ignoreAllSpaces ? source.value.replace(/ |\t/g, '') : source.value;
+    formatted.textContent = formatter(src);
   });
+
+  const clearSource = document.querySelector('#clear-source');
+  clearSource.addEventListener('click', () => source.value = '');
+
+  const formattedSelected = document.querySelector('#formatted-selected');
+  const copySource = document.querySelector('#copy-output');
+  copySource.addEventListener('click', () => {
+    formattedSelected.value = formatted.textContent;
+    formattedSelected.style.display = 'block';
+    formattedSelected.select();
+    document.execCommand('copy');
+    formattedSelected.style.display = 'none';
+  });
+
 </script>
 
 </html>
