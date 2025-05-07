@@ -67,13 +67,19 @@
 <body>
   <h1>Text Formatter</h1>
   <div class="main">
-    <textarea id="source" rows="10" placeholder="paste text here"></textarea>
-    <div>
-      <h3>Output</h3>
-      <div id="formatted"></div>
-      <button id="clear-source">Clear</button>
-      &emsp;
-      <button id="copy-output">Copy</button>
+    <div class="main">
+      <textarea id="source" rows="10" placeholder="paste text here"></textarea>
+      <div>
+        <button id="clear-source">Clear</button>
+        &emsp;
+        <button id="copy-output">Copy</button>
+      </div>
+      
+      <div>
+        <h3>Output</h3>
+        <pre id="formatted"></div>
+        <input id="formatted-selected" style="display: none;"></input>
+      </div>
     </div>
   </div>
 
@@ -92,14 +98,14 @@
   const clearSource = document.querySelector('#clear-source');
   clearSource.addEventListener('click', () => source.value = '');
 
-  const formattedSelected = document.querySelector('#formatted-selected');
-  const copySource = document.querySelector('#copy-output');
-  copySource.addEventListener('click', () => {
-    formattedSelected.value = formatted.textContent;
-    formattedSelected.style.display = 'block';
-    formattedSelected.select();
+  const formatted_selected = document.querySelector('#formatted-selected');
+  const copy_source = document.querySelector('#copy-output');
+  copy_source.addEventListener('click', () => {
+    formatted_selected.value = formatted.textContent;
+    formatted_selected.style.display = 'block';
+    formatted_selected.select();
     document.execCommand('copy');
-    formattedSelected.style.display = 'none';
+    formatted_selected.style.display = 'none';
   });
 
 </script>
