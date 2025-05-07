@@ -41,6 +41,7 @@
       }
     }
   </style>
+  <script src="./main.js"></script>
 </head>
 
 
@@ -57,11 +58,10 @@
 </body>
 
 <script type="module">
-  import { formatter } from "./formatter.js";
   const formated = document.querySelector('#formated');
   const source = document.querySelector('#source');
   source.addEventListener('input', function (event) {
-    formated.innerText = formatter(source.value);
+    formated.innerText = format(source.value);
   });
 </script>
 
