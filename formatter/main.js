@@ -25,10 +25,10 @@ const tokenize = (text) => {
 
   const is_space = (char) => /[\s\u3000]/.test(char); // Includes full-width space
   
-  // ignored: 。，、；：？！「」『』（）［］｛｝《》【】…—()\[\]{}<>\/|\-_=+*&^%$#@~`\'"
-  const is_punctuation = (char) => /[.,;:?!]/.test(char);
+  // ignored: 「」『』（）［］｛｝《》【】…—()\[\]{}<>\/|\-_=+*&^%$#@~`\'"
+  const is_punctuation = (char) => /[。，、；：？！]/.test(char);
   const is_left_punctuation = (char) => /[「『（［｛《【(\[{<]/.test(char);
-  const is_right_punctuation = (char) => /[」』）］｝》】)\]}>]/.test(char);
+  const is_right_punctuation = (char) => /[」』）］｝》】)\]}>.,;:?!]/.test(char);
   
   const is_math_delimiter = (char, nextChar) => {
     if (char === '$') {
@@ -180,6 +180,7 @@ const en_punctuation_map = {
   '；': ';',
   '：': ':',
   '！': '!',
+  '？': '?',
   '（': '(', 
   '）': ')', 
   '【': '[', 
@@ -260,4 +261,4 @@ const format_tokens = (tokens, config = DEFAULT_CONFIG) => {
   return formatted_tokens.map(t => t.value).join('');
 };
 
-const format = (source, config) => format_tokens(tokenize(source), config);
+const format = (source, config = DEFAULT_CONFIG) => format_tokens(tokenize(source), config);
