@@ -1,10 +1,11 @@
 /**
  * Token types:
- * - "cjk": CJK characters
- * - "ascii": ASCII letters/numbers
- * - "space": whitespace (space, tab, newline)
- * - "punctuation": punctuation marks
- * - "math": TeX formulas (both inline $...$ and block $$...$$)
+ * - `"cjk"`: CJK characters
+ * - `"ascii"`: ASCII letters/numbers
+ * - `"space"`: whitespace (space, tab)
+ * - `"punctuation"`: punctuation marks
+ * - `"math"`: TeX formulas (both inline `$...$` and block `$$...$$`)
+ * - `"other"`: other characters
  */
 const tokenize = (text) => {
   const is_cjk = (char) => {
@@ -23,13 +24,29 @@ const tokenize = (text) => {
     );
   };
 
-  const is_space = (char) => /[\s\u3000]/.test(char); // Includes full-width space
-  
+  // \s\u3000 full-width space
+  const is_space = (char) => /[\t ]/.test(char);
+
+  // all ascii letters / numbers, including latin, greek, cyrillic
+  const is_ascii = (char) => {
+    const code = char.charCodeAt(0);
+    return (
+      (code >= 0x0021 && code <= 0x007E) || // Basic Latin
+      (code >= 0x00A0 && code <= 0x00FF) || // Latin-1 Supplement
+      (code >= 0x0100 && code <= 0x017F) || // Latin Extended-A
+      (code >= 0x0180 && code <= 0x024F) || // Latin Extended-B
+      (code >= 0x0250 && code <= 0x02AF) || // IPA Extensions
+      (code >= 0x0300 && code <= 0x036F) || // Combining Diacritical Marks
+      (code >= 0x0370 && code <= 0x03FF) || // Greek and Coptic
+      (code >= 0x0400 && code <= 0x04FF)    // Cyrillic
+    );
+  };
+
   // ignored: 「」『』（）［］｛｝《》【】…—()\[\]{}<>\/|\-_=+*&^%$#@~`\'"
   const is_punctuation = (char) => /[。，、；：？！]/.test(char);
   const is_left_punctuation = (char) => /[「『（［｛《【(\[{<]/.test(char);
   const is_right_punctuation = (char) => /[」』）］｝》】)\]}>.,;:?!]/.test(char);
-  
+
   const is_math_delimiter = (char, nextChar) => {
     if (char === '$') {
       if (nextChar === '$') return 2; // Block math delimiter
@@ -48,7 +65,7 @@ const tokenize = (text) => {
         // Check if we're ending the same type of math delimiter
         const is_block_math = acc.math_delim_length === 2;
         const current_is_block = math_delim_length === 2;
-        
+
         if (is_block_math === current_is_block) {
           // End of math
           const end_index = acc.index + math_delim_length;
@@ -93,10 +110,12 @@ const tokenize = (text) => {
       char_type = 'punctuation.left';
     } else if (is_right_punctuation(char)) {
       char_type = 'punctuation.right';
+    } else if (is_ascii(char)) {
+      char_type = 'ascii';
     } else if (is_cjk(char)) {
       char_type = 'cjk';
     } else {
-      char_type = 'ascii';
+      char_type = 'other';
     }
 
     // If no current token, start a new one
@@ -137,7 +156,7 @@ const tokenize = (text) => {
   for (let i = 0; i < text.length; i++) {
     const nextChar = i < text.length - 1 ? text[i + 1] : '';
     final_acc = process_character({ ...final_acc, index: i }, text[i], nextChar);
-    
+
     // Skip next character if we're in a block math delimiter
     if (final_acc.index > i) {
       i = final_acc.index;
@@ -181,10 +200,10 @@ const en_punctuation_map = {
   '：': ':',
   '！': '!',
   '？': '?',
-  '（': '(', 
-  '）': ')', 
-  '【': '[', 
-  '】': ']', 
+  '（': '(',
+  '）': ')',
+  '【': '[',
+  '】': ']',
 };
 
 const is_ascii = (token) => token?.type === 'ascii';
@@ -217,6 +236,8 @@ const format_tokens = (tokens, config = DEFAULT_CONFIG) => {
     return store;
   }, []);
 
+    console.log(tokens);
+
   const formatted_tokens = tokens.map((token, index) => {
     const prev = tokens[index - 1];
     const peek = tokens[index + 1];
@@ -244,7 +265,7 @@ const format_tokens = (tokens, config = DEFAULT_CONFIG) => {
     }
 
     if (
-         (all([prev, peek], x => is_cjk(x) && x.value.length === 1) && is_space(token))
+      (all([prev, peek], x => is_cjk(x) && x.value.length === 1) && is_space(token))
       || (is_text(prev) && is_space(token) && is_punctuation(peek))
     ) {
       return EMPTY;

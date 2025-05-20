@@ -96,7 +96,7 @@
   });
 
   const clearSource = document.querySelector('#clear-source');
-  clearSource.addEventListener('click', () => source.value = '');
+  clearSource.addEventListener('click', () => (source.value = '', formatted.textContent = ''));
 
   const formatted_selected = document.querySelector('#formatted-selected');
   const copy_source = document.querySelector('#copy-output');
