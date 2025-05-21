@@ -236,8 +236,6 @@ const format_tokens = (tokens, config = DEFAULT_CONFIG) => {
     return store;
   }, []);
 
-    console.log(tokens);
-
   const formatted_tokens = tokens.map((token, index) => {
     const prev = tokens[index - 1];
     const peek = tokens[index + 1];
