@@ -195,6 +195,8 @@ const DEFAULT_CONFIG = {
 
 const en_punctuation_map = {
   '。': '.',
+  '“': '"', 
+  '”': '"', 
   '，': ',',
   '；': ';',
   '：': ':',
