@@ -2,5 +2,10 @@
     {
         "href": "https://kokic.github.io/smaragdina/mourn-lawvere", 
         "text": "我在此补充 Lawvere 的著作集, 见 https://github.com/mattearnshaw/lawvere." 
+    }, 
+
+    {
+        "href": "https://kirisamemagicshop.github.io/posts/mirrored/714743580/", 
+        "text": "Oleg Kiselyov 原文 “an associative binary operation which has a unit (also called zero) element.” 的这一段可谓恶意满满, 他使用了一个不交换的群运算, 按照约定这个运算应该被记为乘法, 相应的乘法单位是 1, 即 unit. 而当我们说一个群上的加法的时候, 往往是指这个群是交换群."
     }
 ]
