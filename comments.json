@@ -11,6 +11,6 @@
 
     {
         "href": "https://kokic.github.io/daily-surf/wolfram-engine", 
-        "text": "吐槽一下, 作为 Electron 应用, WLJS 在 GUI 的缩放适配上做的并不合格, 而且每次打开几乎都在更新, 很影响使用体验. "
+        "text": "吐槽一下, 作为 Electron 应用的 WLJS 目前在 GUI 的缩放适配上做的并不合格, 而且几乎每次打开都在更新, 除此之外还有不少小问题, 整体下来很影响使用体验. "
     }
 ]
